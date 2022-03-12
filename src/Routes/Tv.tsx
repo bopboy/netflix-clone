@@ -2,7 +2,7 @@ import React from 'react'
 
 function Tv() {
     return (
-        <div>Tv</div>
+        <div style={{ backgroundColor: "blue", height: "200vh", color: "white" }}>Tv</div>
     )
 }
 
