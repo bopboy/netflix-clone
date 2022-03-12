@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useRouteMatch } from "react-router-dom";
 import styled from "styled-components"
 import { motion } from "framer-motion";
@@ -59,17 +60,34 @@ const Circle = styled(motion.span)`
 `
 const Search = styled.span`
     color: white;
+    display: flex;
+    align-items: center;
+    position: relative;
     svg {
         height: 25px;
     }
+`
+const Input = styled(motion.input)`
+    transform-origin: right center;
+    position: absolute;
+    right: 0px;
+    padding: 5px 10px;
+    padding-left: 35px;
+    z-index: -1;
+    color: white;
+    font-size: 16px;
+    background-color: transparent;
+    border: 1px solid ${props => props.theme.white.darker};
 `
 const logoVariants = {
     normal: { fillOpacity: 1 },
     active: { fillOpacity: [0, 1, 0], transtion: { repeat: Infinity } }
 }
 function Header() {
+    const [searchOpen, setSearchOpen] = useState(false)
     const homeMatch = useRouteMatch("/movies")
     const tvMatch = useRouteMatch("/tv")
+    const toggleSearch = () => setSearchOpen(prev => !prev)
     return (
         <Nav>
             <Col>
@@ -102,7 +120,10 @@ function Header() {
             </Col>
             <Col>
                 <Search>
-                    <svg
+                    <motion.svg
+                        onClick={toggleSearch}
+                        animate={{ x: searchOpen ? -180 : 0 }}
+                        transition={{ type: "linear" }}
                         fill="currentColor"
                         viewBox="0 0 20 20"
                         xmlns="http://www.w3.org/2000/svg"
@@ -113,7 +134,13 @@ function Header() {
                             d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
                             clipRule="evenodd"
                         ></path>
-                    </svg>
+                    </motion.svg>
+                    <Input
+                        initial={{ scaleX: 0 }}
+                        transition={{ type: "linear" }}
+                        animate={{ scaleX: searchOpen ? 1 : 0 }}
+                        placeholder="Search for movie or tv show..."
+                    />
                 </Search>
             </Col>
         </Nav>
