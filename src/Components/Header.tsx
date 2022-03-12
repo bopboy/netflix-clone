@@ -1,16 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useRouteMatch } from "react-router-dom";
 import styled from "styled-components"
-import { motion } from "framer-motion";
+import { motion, useAnimation, useViewportScroll } from "framer-motion";
 
-const Nav = styled.nav`
+const Nav = styled(motion.nav)`
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: fixed;
     width: 100%;
-    top:0;
-    /* background-color: red; */
+    top: 0;
     height: 80px;
     font-size:12px;
     padding:20px 60px;
@@ -83,13 +82,36 @@ const logoVariants = {
     normal: { fillOpacity: 1 },
     active: { fillOpacity: [0, 1, 0], transtion: { repeat: Infinity } }
 }
+const navVariants = {
+    top: { backgroundColor: "rgba(0,0,0,0)" },
+    scroll: { backgroundColor: "rgba(0,0,0,1)" }
+}
 function Header() {
     const [searchOpen, setSearchOpen] = useState(false)
     const homeMatch = useRouteMatch("/movies")
     const tvMatch = useRouteMatch("/tv")
-    const toggleSearch = () => setSearchOpen(prev => !prev)
+    const inputAnimation = useAnimation()
+    const navAnimation = useAnimation()
+    const { scrollY } = useViewportScroll()
+    const toggleSearch = () => {
+        if (searchOpen) {
+            inputAnimation.start({ scaleX: 0 })
+        } else {
+            inputAnimation.start({ scaleX: 1 })
+        }
+        setSearchOpen(prev => !prev)
+    }
+    useEffect(() => {
+        scrollY.onChange(() => {
+            if (scrollY.get() > 80) {
+                navAnimation.start("scroll")
+            } else {
+                navAnimation.start("top")
+            }
+        })
+    }, [scrollY, navAnimation])
     return (
-        <Nav>
+        <Nav variants={navVariants} animate={navAnimation} initial="top">
             <Col>
                 <Logo
                     variants={logoVariants}
@@ -138,7 +160,7 @@ function Header() {
                     <Input
                         initial={{ scaleX: 0 }}
                         transition={{ type: "linear" }}
-                        animate={{ scaleX: searchOpen ? 1 : 0 }}
+                        animate={inputAnimation}
                         placeholder="Search for movie or tv show..."
                     />
                 </Search>
