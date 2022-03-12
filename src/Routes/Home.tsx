@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { motion } from 'framer-motion';
 import { getMovies, IGetMovieResult } from '../api'
 import { makeImagePath } from '../utils'
+import SliderContainer from '../Components/SliderContainer';
 
 const Wrapper = styled.div`
     background: black;
@@ -42,6 +43,7 @@ function Home() {
                         <Title>{data?.results[0].title}</Title>
                         <Overview>{data?.results[0].overview}</Overview>
                     </Banner>
+                    <SliderContainer />
                 </>
         }</Wrapper >
     )
