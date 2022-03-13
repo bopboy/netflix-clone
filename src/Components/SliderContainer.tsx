@@ -116,7 +116,7 @@ interface ISliderConProps {
 
 function SliderContainer({ videoData, sliderTitle }: ISliderConProps) {
     const history = useHistory()
-    const bigMovieMatch = useRouteMatch("/movies/:movieId")
+    const bigMovieMatch = useRouteMatch<{ movieId: string }>("/movies/:movieId")
     const [index, setIndex] = useState(0)
     const [back, setBack] = useState(false)
     const [leaving, setLeaving] = useState(false)
@@ -182,7 +182,7 @@ function SliderContainer({ videoData, sliderTitle }: ISliderConProps) {
                                     }
                                     onClick={() => onBoxClicked(movie.id)}
                                 >
-                                    <Info key="boxInfo" variants={infoVariants}><h4>{movie.title}</h4></Info>
+                                    <Info key="boxInfo" variants={infoVariants}><h4>{movie.title || movie.name}</h4></Info>
                                 </Box>
                             ))}
                     </Row>
@@ -191,7 +191,12 @@ function SliderContainer({ videoData, sliderTitle }: ISliderConProps) {
                     </ArrowBtn>
                 </AnimatePresence>
             </Slider >
-            {bigMovieMatch ? (<MovieModal />) : null}
+            {bigMovieMatch ? (
+                <MovieModal
+                    bigVideoMatch={bigMovieMatch}
+                    videoData={videoData}
+                />
+            ) : null}
         </>
     )
 }
