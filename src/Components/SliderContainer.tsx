@@ -31,6 +31,8 @@ const Box = styled(motion.div) <{ bgphoto: string }>`
     height: 200px;
     color: red;
     font-size: 16px;
+    &:first-child {transform-origin: center left}
+    &:last-child {transform-origin: center right}
 `
 const ArrowBtn = styled(motion.div)`
     z-index:10;  // 이걸 안하면 왼쪽 버튼이 아래 깔려서 클릭이 안됨
@@ -63,6 +65,18 @@ const rowVariants = {
     hidden: (back: boolean) => ({ x: back ? -window.outerWidth + 6 : window.outerWidth - 6 }),
     visible: { x: 0 },
     exit: (back: boolean) => ({ x: back ? window.outerWidth - 6 : -window.outerWidth + 6 }),
+}
+const boxVariants = {
+    normal: { scale: 1 },
+    hover: {
+        scale: 1.3,
+        y: -50,
+        transition: {
+            delay: 0.3,
+            duration: 0.3,
+            type: "tween"
+        }
+    }
 }
 interface ISliderConProps {
     videoData: IMovie[]
@@ -120,6 +134,10 @@ function SliderContainer({ videoData, sliderTitle }: ISliderConProps) {
                         .map(movie => (
                             <Box
                                 key={movie.id}
+                                variants={boxVariants}
+                                whileHover="hover"
+                                initial="normal"
+                                transition={{ type: "tween" }}
                                 bgphoto={
                                     movie.backdrop_path
                                         ? makeImagePath(movie.backdrop_path, "w500")
