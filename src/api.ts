@@ -38,3 +38,7 @@ export function getPopularMovies() {
     return fetch(`${BASE_PATH}/movie/popular?api_key=${TMDB_API_KEY}`)
         .then(res => res.json())
 }
+export function getSearchVideo(format: string, id: string) {
+    return fetch(`${BASE_PATH}/search/${format}?api_key=${TMDB_API_KEY}&query=${id}`)
+        .then(res => res.json())
+}
