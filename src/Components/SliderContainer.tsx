@@ -1,6 +1,13 @@
 import { useState } from 'react'
 import styled from 'styled-components'
 import { motion, AnimatePresence } from 'framer-motion'
+import { IMovie } from '../api'
+import { off } from 'process'
+import { makeImagePath } from '../utils'
+
+const OFFSET = 6
+const NEXFLIX_LOGO_URL = "https://assets.brand.microsites.netflix.io/assets/2800a67c-4252-11ec-a9ce-066b49664af6_cm_800w.jpg?v=4";
+
 
 const Slider = styled.div`
     position: relative;
@@ -16,11 +23,15 @@ const Row = styled(motion.div)`
     width:100%;
     padding:0px 65px 0px 65px;
 `
-const Box = styled(motion.div)`
+const Box = styled(motion.div) <{ bgPhoto: string }>`
+    border-radius: 8px;
     background-color: white;
+    background-image: url(${props => props.bgPhoto});
+    background-size: cover;
+    background-position: center center;
     height: 200px;
     color: red;
-    font-size: 66px;
+    font-size: 16px;
 `
 const ArrowBtn = styled(motion.div)`
     z-index:10;  // 이걸 안하면 왼쪽 버튼이 아래 깔려서 클릭이 안됨
@@ -49,23 +60,41 @@ const rowVariants = {
     visible: { x: 0 },
     exit: (back: boolean) => ({ x: back ? window.outerWidth - 6 : -window.outerWidth + 6 }),
 }
+interface ISliderConProps {
+    videoData: IMovie[]
+}
 
-function SliderContainer() {
+function SliderContainer({ videoData }: ISliderConProps) {
     const [index, setIndex] = useState(0)
     const [back, setBack] = useState(false)
+    const [leaving, setLeaving] = useState(false)
     const incIndex = () => {
-        setBack(false)
-        setIndex(prev => prev + 1)
+        if (videoData) {
+            if (leaving) return
+            toggleLeaving()
+            setBack(false)
+            const totalMovies = videoData.length - 1
+            const maxIndex = Math.floor(totalMovies / OFFSET) - 1
+            setIndex(prev => prev === maxIndex ? 0 : prev + 1)
+        }
     }
     const decIndex = () => {
-        setBack(true)
-        setIndex(prev => prev - 1)
+        if (videoData) {
+            if (leaving) return
+            toggleLeaving()
+            setBack(true)
+            const totalMovies = videoData.length - 1
+            const maxIndex = Math.floor(totalMovies / OFFSET) - 1
+            setIndex(prev => prev === 0 ? maxIndex : prev - 1)
+        }
     }
+    const toggleLeaving = () => setLeaving(prev => !prev)
     return (
         <Slider>
             <AnimatePresence
                 initial={false}
                 custom={back}
+                onExitComplete={toggleLeaving}
             >
                 <ArrowBtn key="leftBtn" onClick={decIndex}>
                     <motion.i key="leftI" className="fas fa-chevron-left"></motion.i>
@@ -79,7 +108,21 @@ function SliderContainer() {
                     key={index}
                     custom={back}
                 >
-                    {[1, 2, 3, 4, 5, 6].map(i => (<Box key={i}>{i}</Box>))}
+                    {videoData
+                        .slice(1)
+                        .slice(OFFSET * index, OFFSET * index + OFFSET)
+                        .map(movie => (
+                            <Box
+                                key={movie.id}
+                                bgPhoto={
+                                    movie.backdrop_path
+                                        ? makeImagePath(movie.backdrop_path, "w500")
+                                        : makeImagePath(movie.poster_path, "w500")
+                                            ? makeImagePath(movie.poster_path, "w500")
+                                            : NEXFLIX_LOGO_URL
+                                }
+                            />
+                        ))}
                 </Row>
                 <ArrowBtn key="rightBtn" onClick={incIndex}>
                     <motion.i key="rightI" className="fas fa-chevron-right"></motion.i>

@@ -1,7 +1,7 @@
 import { TMDB_API_KEY } from './config'
 const BASE_PATH = "https://api.themoviedb.org/3"
 
-interface IMovie {
+export interface IMovie {
     id: number
     backdrop_path: string
     poster_path: string
@@ -18,7 +18,7 @@ export interface IGetMovieResult {
     total_pages: number
     total_results: number
 }
-export function getMovies() {
+export function getNowMovies() {
     return fetch(`${BASE_PATH}/movie/now_playing?api_key=${TMDB_API_KEY}`)
         .then(res => res.json())
 }
