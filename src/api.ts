@@ -26,3 +26,15 @@ export function getNowMovies() {
     return fetch(`${BASE_PATH}/movie/now_playing?api_key=${TMDB_API_KEY}`)
         .then(res => res.json())
 }
+export function getTopMovies() {
+    return fetch(`${BASE_PATH}/movie/top_rated?api_key=${TMDB_API_KEY}`)
+        .then(res => res.json())
+}
+export function getUpcomingMovies() {
+    return fetch(`${BASE_PATH}/movie/upcoming?api_key=${TMDB_API_KEY}`)
+        .then(res => res.json())
+}
+export function getPopularMovies() {
+    return fetch(`${BASE_PATH}/movie/popular?api_key=${TMDB_API_KEY}`)
+        .then(res => res.json())
+}

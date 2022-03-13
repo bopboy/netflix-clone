@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import styled from 'styled-components'
 import { motion } from 'framer-motion';
 import { Helmet } from "react-helmet";
-import { getNowMovies, IGetMovieResult, IMovie } from '../api'
+import { getNowMovies, getTopMovies, getUpcomingMovies, getPopularMovies, IGetMovieResult, IMovie } from '../api'
 import { makeImagePath } from '../utils'
 import SliderContainer from '../Components/SliderContainer';
 import Loader from '../Components/Loader';
@@ -90,8 +90,17 @@ const MoreBox = styled.div`
 function Home() {
     const history = useHistory()
     const nowPlaying: IMovie[] = []
-    const { data: nowPlayingMovies, isLoading } = useQuery<IGetMovieResult>(["movies", "nowPlaying"], getNowMovies)
+    const topRated: IMovie[] = []
+    const upcoming: IMovie[] = []
+    const popular: IMovie[] = []
+    const { data: nowPlayingMovies, isLoading: nowPlayLoading } = useQuery<IGetMovieResult>(["movies", "nowPlaying"], getNowMovies)
+    const { data: topRatedMovies, isLoading: topRatedLoading } = useQuery<IGetMovieResult>(["movies", "topRated"], getTopMovies)
+    const { data: upcomingMovies, isLoading: upcomingLoading } = useQuery<IGetMovieResult>(["movies", "upcoming"], getUpcomingMovies)
+    const { data: popularMovies, isLoading: popularLoading } = useQuery<IGetMovieResult>(["movies", "popular"], getPopularMovies)
     nowPlayingMovies?.results.map(item => nowPlaying.push(item))
+    topRatedMovies?.results.map(item => topRated.push(item))
+    upcomingMovies?.results.map(item => upcoming.push(item))
+    popularMovies?.results.map(item => popular.push(item))
     const onBoxClicked = (id: number) => {
         history.push(`/movies/${id}`);
     };
@@ -101,7 +110,7 @@ function Home() {
                 <title>Netflix-Clone | Movie</title>
             </Helmet>
             {
-                isLoading ?
+                nowPlayLoading ?
                     <Loader /> :
                     <>
                         <Banner bgPhoto={makeImagePath(nowPlayingMovies?.results[0].backdrop_path || "")}>
@@ -139,6 +148,24 @@ function Home() {
                             <SliderContainer
                                 videoData={nowPlaying}
                                 sliderTitle="Now Playing"
+                            />
+                        }
+                        {popular &&
+                            <SliderContainer
+                                videoData={popular}
+                                sliderTitle="Popluar"
+                            />
+                        }
+                        {upcoming &&
+                            <SliderContainer
+                                videoData={upcoming}
+                                sliderTitle="Upcoming"
+                            />
+                        }
+                        {topRated &&
+                            <SliderContainer
+                                videoData={topRated}
+                                sliderTitle="Top Rated"
                             />
                         }
                     </>

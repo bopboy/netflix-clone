@@ -137,7 +137,7 @@ function MovieModal({ videoData, bigVideoMatch }: IMovieModal) {
     const [overlay, setOverlay] = useState(false)
     const onOverlayClicked = () => {
         setOverlay(false)
-        history.push(`/movie`)
+        history.push(`/movies`)
     }
     const clickedMovie =
         bigVideoMatch?.params?.movieId &&
