@@ -10,9 +10,9 @@ function App() {
     <Router>
       <Header />
       <Switch>
-        <Route path="/tv"><Tv /></Route>
+        <Route path="/tv*"><Tv /></Route>
         <Route path="/search"><Search /></Route>
-        <Route path="/movies"><Home /></Route>
+        <Route path="/movies*"><Home /></Route>
         <Route path="/"><Home /></Route>
       </Switch>
       <Footer />

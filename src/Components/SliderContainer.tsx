@@ -1,9 +1,10 @@
 import { useState } from 'react'
+import { useLocation, useHistory, useRouteMatch } from "react-router-dom";
 import styled from 'styled-components'
 import { motion, AnimatePresence } from 'framer-motion'
 import { IMovie } from '../api'
-import { off } from 'process'
 import { makeImagePath } from '../utils'
+import MovieModal from './MovieModal';
 
 const OFFSET = 6
 const NEXFLIX_LOGO_URL = "https://assets.brand.microsites.netflix.io/assets/2800a67c-4252-11ec-a9ce-066b49664af6_cm_800w.jpg?v=4";
@@ -31,6 +32,7 @@ const Box = styled(motion.div) <{ bgphoto: string }>`
     height: 200px;
     overflow: hidden; // Info 를 Box 아래로 숨기기 위해 필요
     font-size: 16px;
+    cursor: pointer;
     &:first-child {transform-origin: center left}
     &:last-child {transform-origin: center right}
 `
@@ -113,9 +115,12 @@ interface ISliderConProps {
 }
 
 function SliderContainer({ videoData, sliderTitle }: ISliderConProps) {
+    const history = useHistory()
+    const bigMovieMatch = useRouteMatch("/movies/:movieId")
     const [index, setIndex] = useState(0)
     const [back, setBack] = useState(false)
     const [leaving, setLeaving] = useState(false)
+    const onBoxClicked = (id: number) => { history.push(`/movies/${id}`); };
     const incIndex = () => {
         if (videoData) {
             if (leaving) return
@@ -138,52 +143,56 @@ function SliderContainer({ videoData, sliderTitle }: ISliderConProps) {
     }
     const toggleLeaving = () => setLeaving(prev => !prev)
     return (
-        <Slider>
-            <AnimatePresence
-                initial={false}
-                custom={back}
-                onExitComplete={toggleLeaving}
-            >
-                <SliderTitle>{sliderTitle}</SliderTitle>
-                <ArrowBtn key="leftBtn" onClick={decIndex}>
-                    <motion.i key="leftI" className="fas fa-chevron-left"></motion.i>
-                </ArrowBtn>
-                <Row
-                    variants={rowVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    transition={{ type: "tween", duration: 1 }}
-                    key={index}
+        <>
+            <Slider>
+                <AnimatePresence
+                    initial={false}
                     custom={back}
+                    onExitComplete={toggleLeaving}
                 >
-                    {videoData
-                        .slice(1)
-                        .slice(OFFSET * index, OFFSET * index + OFFSET)
-                        .map(movie => (
-                            <Box
-                                key={movie.id}
-                                variants={boxVariants}
-                                whileHover="hover"
-                                initial="normal"
-                                transition={{ type: "tween" }}
-                                bgphoto={
-                                    movie.backdrop_path
-                                        ? makeImagePath(movie.backdrop_path, "w500")
-                                        : makeImagePath(movie.poster_path, "w500")
-                                            ? makeImagePath(movie.poster_path, "w500")
-                                            : NEXFLIX_LOGO_URL
-                                }
-                            >
-                                <Info key="boxInfo" variants={infoVariants}><h4>{movie.title}</h4></Info>
-                            </Box>
-                        ))}
-                </Row>
-                <ArrowBtn key="rightBtn" onClick={incIndex}>
-                    <motion.i key="rightI" className="fas fa-chevron-right"></motion.i>
-                </ArrowBtn>
-            </AnimatePresence>
-        </Slider>
+                    <SliderTitle>{sliderTitle}</SliderTitle>
+                    <ArrowBtn key="leftBtn" onClick={decIndex}>
+                        <motion.i key="leftI" className="fas fa-chevron-left"></motion.i>
+                    </ArrowBtn>
+                    <Row
+                        variants={rowVariants}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                        transition={{ type: "tween", duration: 1 }}
+                        key={index}
+                        custom={back}
+                    >
+                        {videoData
+                            .slice(1)
+                            .slice(OFFSET * index, OFFSET * index + OFFSET)
+                            .map(movie => (
+                                <Box
+                                    key={movie.id}
+                                    variants={boxVariants}
+                                    whileHover="hover"
+                                    initial="normal"
+                                    transition={{ type: "tween" }}
+                                    bgphoto={
+                                        movie.backdrop_path
+                                            ? makeImagePath(movie.backdrop_path, "w500")
+                                            : makeImagePath(movie.poster_path, "w500")
+                                                ? makeImagePath(movie.poster_path, "w500")
+                                                : NEXFLIX_LOGO_URL
+                                    }
+                                    onClick={() => onBoxClicked(movie.id)}
+                                >
+                                    <Info key="boxInfo" variants={infoVariants}><h4>{movie.title}</h4></Info>
+                                </Box>
+                            ))}
+                    </Row>
+                    <ArrowBtn key="rightBtn" onClick={incIndex}>
+                        <motion.i key="rightI" className="fas fa-chevron-right"></motion.i>
+                    </ArrowBtn>
+                </AnimatePresence>
+            </Slider >
+            {bigMovieMatch ? (<MovieModal />) : null}
+        </>
     )
 }
 
