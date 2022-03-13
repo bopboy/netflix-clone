@@ -8,7 +8,6 @@ import { makeImagePath } from '../utils'
 const OFFSET = 6
 const NEXFLIX_LOGO_URL = "https://assets.brand.microsites.netflix.io/assets/2800a67c-4252-11ec-a9ce-066b49664af6_cm_800w.jpg?v=4";
 
-
 const Slider = styled.div`
     position: relative;
     top: -120px;
@@ -23,10 +22,10 @@ const Row = styled(motion.div)`
     width:100%;
     padding:0px 65px 0px 65px;
 `
-const Box = styled(motion.div) <{ bgPhoto: string }>`
+const Box = styled(motion.div) <{ bgphoto: string }>`
     border-radius: 8px;
     background-color: white;
-    background-image: url(${props => props.bgPhoto});
+    background-image: url(${props => props.bgphoto});
     background-size: cover;
     background-position: center center;
     height: 200px;
@@ -54,7 +53,12 @@ const ArrowBtn = styled(motion.div)`
     &:first-child { left: 0; }
     &:last-child { right: 0; }
 `
-
+const SliderTitle = styled.div`
+    font-size: 25px;
+    font-weight: 600;
+    padding-left:65px;
+    margin-bottom: 15px;
+`
 const rowVariants = {
     hidden: (back: boolean) => ({ x: back ? -window.outerWidth + 6 : window.outerWidth - 6 }),
     visible: { x: 0 },
@@ -62,9 +66,10 @@ const rowVariants = {
 }
 interface ISliderConProps {
     videoData: IMovie[]
+    sliderTitle: string
 }
 
-function SliderContainer({ videoData }: ISliderConProps) {
+function SliderContainer({ videoData, sliderTitle }: ISliderConProps) {
     const [index, setIndex] = useState(0)
     const [back, setBack] = useState(false)
     const [leaving, setLeaving] = useState(false)
@@ -96,6 +101,7 @@ function SliderContainer({ videoData }: ISliderConProps) {
                 custom={back}
                 onExitComplete={toggleLeaving}
             >
+                <SliderTitle>{sliderTitle}</SliderTitle>
                 <ArrowBtn key="leftBtn" onClick={decIndex}>
                     <motion.i key="leftI" className="fas fa-chevron-left"></motion.i>
                 </ArrowBtn>
@@ -114,7 +120,7 @@ function SliderContainer({ videoData }: ISliderConProps) {
                         .map(movie => (
                             <Box
                                 key={movie.id}
-                                bgPhoto={
+                                bgphoto={
                                     movie.backdrop_path
                                         ? makeImagePath(movie.backdrop_path, "w500")
                                         : makeImagePath(movie.poster_path, "w500")
