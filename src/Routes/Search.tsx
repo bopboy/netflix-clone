@@ -24,8 +24,8 @@ function Search() {
     const location = useLocation()
     const keyword = new URLSearchParams(location.search).get("keyword")
     const word = keyword?.trim()?.replace(/ /g, "%20") + ""
-    const searchMovieData = useQuery<IGetMovieResult>(["movies", "search"], () => getSearchVideo("movie", word))
-    const searchTvData = useQuery<IGetMovieResult>(["tv", "search"], () => getSearchVideo("tv", word))
+    const searchMovieData = useQuery<IGetMovieResult>(["movies", "search"], () => getSearchVideo("movie", word), { refetchInterval: 200 })
+    const searchTvData = useQuery<IGetMovieResult>(["tv", "search"], () => getSearchVideo("tv", word), { refetchInterval: 100 })
     return (
         <>
             <Wrapper>
@@ -38,12 +38,14 @@ function Search() {
                                 <SliderContainer
                                     sliderTitle={`Search Movies by ${keyword}`}
                                     videoData={searchMovieData.data?.results}
+                                    search={location.search ? location.search : ""}
                                 />
                             )}
                             {searchTvData.data?.results[0] && (
                                 <SliderContainer
                                     sliderTitle={`Search TV Shows by ${keyword}`}
                                     videoData={searchTvData.data?.results}
+                                    search={location.search ? location.search : ""}
                                 />
                             )}
                         </>)

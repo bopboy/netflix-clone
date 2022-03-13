@@ -127,21 +127,33 @@ const modalVariants = {
 };
 interface IMovieModal {
     videoData: IMovie[];
-    bigVideoMatch: { params?: { movieId: string } }
+    bigVideoMatch: { params?: { movieId: string | null } }
+    search?: string,
+    keyword?: string
 }
 
-function MovieModal({ videoData, bigVideoMatch }: IMovieModal) {
+function MovieModal({ videoData, bigVideoMatch, search, keyword }: IMovieModal) {
     const { scrollY } = useViewportScroll()
     const history = useHistory()
     const location = useLocation()
     const [overlay, setOverlay] = useState(false)
+    const backUrl = `${location.pathname}?keyword=${keyword}`;
     const onOverlayClicked = () => {
         setOverlay(false)
-        history.push(`/movies`)
+        if (!search)
+            history.push(`/movies`)
+        else
+            history.push(`${backUrl}`)
     }
-    const clickedMovie =
-        bigVideoMatch?.params?.movieId &&
-        videoData.find(movie => String(movie.id) === bigVideoMatch?.params?.movieId)
+
+    const movieKeyword: string = new URLSearchParams(location.search).get("movies") ?? ""
+    const searchKeyword = movieKeyword
+    const movieSearch = bigVideoMatch?.params?.movieId ? bigVideoMatch?.params.movieId : searchKeyword
+
+    // const clickedMovie =
+    //     bigVideoMatch?.params?.movieId &&
+    //     videoData.find(movie => String(movie.id) === bigVideoMatch?.params?.movieId)
+    const clickedMovie = videoData.find(item => item.id === +movieSearch)
     const starSelector = (score: number) => {
         if (score >= 8.5) return "fas fa-star"
         else if (score > 7) return "fas fa-star-half-alt"

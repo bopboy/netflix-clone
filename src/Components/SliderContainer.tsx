@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useLocation, useHistory, useRouteMatch } from "react-router-dom";
 import styled from 'styled-components'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -112,15 +112,25 @@ const infoVariants = {
 interface ISliderConProps {
     videoData: IMovie[]
     sliderTitle: string
+    search: string
 }
 
-function SliderContainer({ videoData, sliderTitle }: ISliderConProps) {
+function SliderContainer({ videoData, sliderTitle, search }: ISliderConProps) {
+    const location = useLocation()
     const history = useHistory()
-    const bigMovieMatch = useRouteMatch<{ movieId: string }>("/movies/:movieId")
+    const bigMovieMatch = useRouteMatch<{ movieId: string }>(!search ? "/movies/:movieId" : "undefined")
+    const locationMovie = { params: { movieId: new URLSearchParams(location.search).get("movies") } }
+    // console.log(locationMovie)
     const [index, setIndex] = useState(0)
     const [back, setBack] = useState(false)
     const [leaving, setLeaving] = useState(false)
-    const onBoxClicked = (id: number) => { history.push(`/movies/${id}`); };
+    const keyword = new URLSearchParams(location.search).get("keyword")
+    const onBoxClicked = (id: number) => {
+        if (!search)
+            history.push(`/movies/${id}`)
+        else
+            history.push(`/search?keyword=${keyword}&movies=${id}`)
+    };
     const incIndex = () => {
         if (videoData) {
             if (leaving) return
@@ -191,14 +201,16 @@ function SliderContainer({ videoData, sliderTitle }: ISliderConProps) {
                     </ArrowBtn>
                 </AnimatePresence>
             </Slider >
-            {bigMovieMatch ? (
-                <MovieModal
-                    bigVideoMatch={bigMovieMatch}
+            {(locationMovie.params.movieId ? locationMovie.params.movieId?.length >= 1 : false ||
+                bigMovieMatch) ?
+                (<MovieModal
+                    bigVideoMatch={bigMovieMatch ?? locationMovie}
                     videoData={videoData}
-                />
-            ) : null}
+                    search={search}
+                    keyword={keyword ? keyword : undefined}
+                />) : null}
         </>
     )
 }
 
-export default SliderContainer
+export default React.memo(SliderContainer)

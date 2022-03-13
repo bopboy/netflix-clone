@@ -1,6 +1,6 @@
 import React from 'react'
 import { useQuery } from 'react-query'
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import styled from 'styled-components'
 import { motion } from 'framer-motion';
 import { Helmet } from "react-helmet";
@@ -89,6 +89,7 @@ const MoreBox = styled.div`
 `
 function Home() {
     const history = useHistory()
+    const location = useLocation()
     const nowPlaying: IMovie[] = []
     const topRated: IMovie[] = []
     const upcoming: IMovie[] = []
@@ -148,24 +149,28 @@ function Home() {
                             <SliderContainer
                                 videoData={nowPlaying}
                                 sliderTitle="Now Playing"
+                                search={location.search ? location.search : ""}
                             />
                         }
                         {popular &&
                             <SliderContainer
                                 videoData={popular}
                                 sliderTitle="Popluar"
+                                search={location.search ? location.search : ""}
                             />
                         }
                         {upcoming &&
                             <SliderContainer
                                 videoData={upcoming}
                                 sliderTitle="Upcoming"
+                                search={location.search ? location.search : ""}
                             />
                         }
                         {topRated &&
                             <SliderContainer
                                 videoData={topRated}
                                 sliderTitle="Top Rated"
+                                search={location.search ? location.search : ""}
                             />
                         }
                     </>
