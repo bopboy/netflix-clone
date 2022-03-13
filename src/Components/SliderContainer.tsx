@@ -29,7 +29,7 @@ const Box = styled(motion.div) <{ bgphoto: string }>`
     background-size: cover;
     background-position: center center;
     height: 200px;
-    color: red;
+    overflow: hidden; // Info 를 Box 아래로 숨기기 위해 필요
     font-size: 16px;
     &:first-child {transform-origin: center left}
     &:last-child {transform-origin: center right}
@@ -61,6 +61,25 @@ const SliderTitle = styled.div`
     padding-left:65px;
     margin-bottom: 15px;
 `
+const Info = styled(motion.div)`
+    padding: 10px;
+    /* background-color: ${props => props.theme.black.lighter}; */
+    background: linear-gradient(
+        to top,
+        ${props => props.theme.black.lighter},
+        70%,
+        transparent
+    );
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    h4 {
+        text-align: center;
+        font-size: 18px;
+        font-weight: 800;
+    }
+`
 const rowVariants = {
     hidden: (back: boolean) => ({ x: back ? -window.outerWidth + 6 : window.outerWidth - 6 }),
     visible: { x: 0 },
@@ -71,6 +90,16 @@ const boxVariants = {
     hover: {
         scale: 1.3,
         y: -50,
+        transition: {
+            delay: 0.3,
+            duration: 0.3,
+            type: "tween"
+        }
+    }
+}
+const infoVariants = {
+    hover: {
+        opacity: 1,
         transition: {
             delay: 0.3,
             duration: 0.3,
@@ -145,7 +174,9 @@ function SliderContainer({ videoData, sliderTitle }: ISliderConProps) {
                                             ? makeImagePath(movie.poster_path, "w500")
                                             : NEXFLIX_LOGO_URL
                                 }
-                            />
+                            >
+                                <Info key="boxInfo" variants={infoVariants}><h4>{movie.title}</h4></Info>
+                            </Box>
                         ))}
                 </Row>
                 <ArrowBtn key="rightBtn" onClick={incIndex}>
