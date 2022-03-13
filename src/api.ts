@@ -8,6 +8,9 @@ export interface IMovie {
     title?: string
     name?: string
     overview: string
+    release_date?: string
+    first_air_date?: string
+    vote_average: number
 }
 export interface IGetMovieResult {
     dates: {

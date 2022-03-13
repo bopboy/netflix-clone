@@ -91,10 +91,31 @@ const IconBox = styled.div`
         align-items: center;
     }
 `
-const BigOverview = styled.p``
-const BigBody = styled.div``
-const BigPoster = styled.div``
-const BigSection = styled.div``
+const BigOverview = styled.p`
+    width:100%;
+    padding:20px;
+    color:${props => props.theme.white.lighter};
+    position:relative;
+    font-size: 18px;
+    h1 {
+        margin-top: 20px;
+    }
+`
+const BigBody = styled.div`
+    display: grid;
+    height: 100%;
+    grid-template-columns: repeat(2, 1fr);
+`
+const BigPoster = styled.div`
+    object-fit: contain;
+    border-radius: 0.2rem;
+    height: 30rem;
+    background-position: center;
+    background-size: cover;
+`
+const BigSection = styled.div`
+    padding-left: 1.5rem;
+`
 
 const modalVariants = {
     entry: { opacity: 0, y: -50 },
@@ -121,6 +142,11 @@ function MovieModal({ videoData, bigVideoMatch }: IMovieModal) {
     const clickedMovie =
         bigVideoMatch?.params?.movieId &&
         videoData.find(movie => String(movie.id) === bigVideoMatch?.params?.movieId)
+    const starSelector = (score: number) => {
+        if (score >= 8.5) return "fas fa-star"
+        else if (score > 7) return "fas fa-star-half-alt"
+        else return "far fa-star"
+    }
     return (
         <AnimatePresence>
             {clickedMovie ?
@@ -166,9 +192,23 @@ function MovieModal({ videoData, bigVideoMatch }: IMovieModal) {
                         </BicCover>
                         <BigOverview>
                             <BigBody>
-                                <BigPoster />
+                                <BigPoster
+                                    style={{ backgroundImage: `url(${makeImagePath(clickedMovie.poster_path, "w500")})` }}
+                                />
                                 <BigSection>
-
+                                    {clickedMovie.overview}
+                                    <br />
+                                    <h1>
+                                        {clickedMovie.release_date ? "Release Date" : "First Air Date"}
+                                    </h1>
+                                    <p>
+                                        {clickedMovie.release_date ? clickedMovie.release_date : clickedMovie.first_air_date}
+                                    </p>
+                                    <h1>User Score</h1>
+                                    <p>
+                                        <i className={starSelector(clickedMovie.vote_average)} style={{ color: "#ff9f43" }} />
+                                        &nbsp;&nbsp;{clickedMovie.vote_average}
+                                    </p>
                                 </BigSection>
                             </BigBody>
                         </BigOverview>
