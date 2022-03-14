@@ -1,2 +1,3 @@
 # netflix-clone
- nexflix clone
+nexflix clone 1차 버전
+ 
