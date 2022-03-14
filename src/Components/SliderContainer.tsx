@@ -13,7 +13,7 @@ const Slider = styled.div`
     position: relative;
     top: -120px;
     margin-bottom: 70px;
-    height: 250px;
+    height: 180px;
 `
 const Row = styled(motion.div)`
     display: grid;
@@ -24,12 +24,12 @@ const Row = styled(motion.div)`
     padding:0px 65px 0px 65px;
 `
 const Box = styled(motion.div) <{ bgphoto: string }>`
-    border-radius: 8px;
+    border-radius: 5px;
     background-color: white;
     background-image: url(${props => props.bgphoto});
     background-size: cover;
     background-position: center center;
-    height: 200px;
+    height: 150px;
     overflow: hidden; // Info 를 Box 아래로 숨기기 위해 필요
     font-size: 16px;
     cursor: pointer;

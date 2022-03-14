@@ -36,7 +36,7 @@ const Title = styled.h2`
     margin-bottom: 20px;
 `
 const Overview = styled.p`
-    font-size: 30px;
+    font-size: 20px;
     width:50%;
 `
 const UserBox = styled.div`
