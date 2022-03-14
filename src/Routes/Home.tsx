@@ -3,7 +3,7 @@ import { useQuery } from 'react-query'
 import { useHistory, useLocation } from "react-router-dom";
 import styled from 'styled-components'
 import { motion } from 'framer-motion';
-import { Helmet } from "react-helmet";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { getNowMovies, getTopMovies, getUpcomingMovies, getPopularMovies, IGetMovieResult, IMovie } from '../api'
 import { makeImagePath } from '../utils'
 import SliderContainer from '../Components/SliderContainer';
@@ -107,9 +107,11 @@ function Home() {
     };
     return (
         <Wrapper>
-            <Helmet>
-                <title>Netflix-Clone | Movie</title>
-            </Helmet>
+            <HelmetProvider>
+                <Helmet>
+                    <title>Netflix-Clone | Movie</title>
+                </Helmet>
+            </HelmetProvider>
             {
                 nowPlayLoading ?
                     <Loader /> :
@@ -147,6 +149,7 @@ function Home() {
 
                         {nowPlaying &&
                             <SliderContainer
+                                type="movies"
                                 videoData={nowPlaying}
                                 sliderTitle="Now Playing"
                                 search={location.search ? location.search : ""}
@@ -154,6 +157,7 @@ function Home() {
                         }
                         {popular &&
                             <SliderContainer
+                                type="movies"
                                 videoData={popular}
                                 sliderTitle="Popluar"
                                 search={location.search ? location.search : ""}
@@ -161,6 +165,7 @@ function Home() {
                         }
                         {upcoming &&
                             <SliderContainer
+                                type="movies"
                                 videoData={upcoming}
                                 sliderTitle="Upcoming"
                                 search={location.search ? location.search : ""}
@@ -168,6 +173,7 @@ function Home() {
                         }
                         {topRated &&
                             <SliderContainer
+                                type="movies"
                                 videoData={topRated}
                                 sliderTitle="Top Rated"
                                 search={location.search ? location.search : ""}

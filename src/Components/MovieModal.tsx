@@ -91,7 +91,7 @@ const IconBox = styled.div`
         align-items: center;
     }
 `
-const BigOverview = styled.p`
+const BigOverview = styled.div`
     width:100%;
     padding:20px;
     color:${props => props.theme.white.lighter};
@@ -127,12 +127,19 @@ const modalVariants = {
 };
 interface IMovieModal {
     videoData: IMovie[];
-    bigVideoMatch: { params?: { movieId: string | null } }
-    search?: string,
+    bigVideoMatch: {
+        params?:
+        {
+            movieId?: string | null
+            tvId?: string | null
+        }
+    }
+    search?: string
     keyword?: string
+    type: string
 }
 
-function MovieModal({ videoData, bigVideoMatch, search, keyword }: IMovieModal) {
+function MovieModal({ videoData, bigVideoMatch, search, keyword, type }: IMovieModal) {
     const { scrollY } = useViewportScroll()
     const history = useHistory()
     const location = useLocation()
@@ -141,19 +148,22 @@ function MovieModal({ videoData, bigVideoMatch, search, keyword }: IMovieModal) 
     const onOverlayClicked = () => {
         setOverlay(false)
         if (!search)
-            history.push(`/movies`)
+            history.push(`${type}`)
         else
             history.push(`${backUrl}`)
     }
 
     const movieKeyword: string = new URLSearchParams(location.search).get("movies") ?? ""
-    const searchKeyword = movieKeyword
-    const movieSearch = bigVideoMatch?.params?.movieId ? bigVideoMatch?.params.movieId : searchKeyword
+    const tvKeyword: string = new URLSearchParams(location.search).get("tv") ?? ""
 
+    const searchKeyword = movieKeyword ?? tvKeyword
+    const movieSearch = bigVideoMatch?.params?.movieId ? bigVideoMatch?.params.movieId : searchKeyword
+    const tvSearch = bigVideoMatch?.params?.tvId ? bigVideoMatch?.params.tvId : searchKeyword
+    const isSearch = movieSearch ? movieSearch : tvSearch
     // const clickedMovie =
     //     bigVideoMatch?.params?.movieId &&
     //     videoData.find(movie => String(movie.id) === bigVideoMatch?.params?.movieId)
-    const clickedMovie = videoData.find(item => item.id === +movieSearch)
+    const clickedMovie = videoData.find(item => item.id === +isSearch)
     const starSelector = (score: number) => {
         if (score >= 8.5) return "fas fa-star"
         else if (score > 7) return "fas fa-star-half-alt"

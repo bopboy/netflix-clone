@@ -1,6 +1,6 @@
 import React from 'react'
 import { useQuery } from 'react-query'
-import { Helmet } from "react-helmet";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import styled from 'styled-components';
 import { useLocation } from 'react-router-dom'
 import { getSearchVideo, IGetMovieResult } from '../api'
@@ -29,13 +29,16 @@ function Search() {
     return (
         <>
             <Wrapper>
-                <Helmet><title>Netflix-Clone | Search</title></Helmet>
+                <HelmetProvider>
+                    <Helmet><title>Netflix-Clone | Search</title></Helmet>
+                </HelmetProvider>
                 {
                     !searchMovieData.data?.results[0] && !searchTvData.data?.results[0] ?
                         (<Loader>Couldn't find anything...</Loader>) :
                         (<>
                             {searchMovieData.data?.results[0] && (
                                 <SliderContainer
+                                    type="movies"
                                     sliderTitle={`Search Movies by ${keyword}`}
                                     videoData={searchMovieData.data?.results}
                                     search={location.search ? location.search : ""}
@@ -43,6 +46,7 @@ function Search() {
                             )}
                             {searchTvData.data?.results[0] && (
                                 <SliderContainer
+                                    type="tv"
                                     sliderTitle={`Search TV Shows by ${keyword}`}
                                     videoData={searchTvData.data?.results}
                                     search={location.search ? location.search : ""}

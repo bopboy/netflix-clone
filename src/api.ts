@@ -42,3 +42,20 @@ export function getSearchVideo(format: string, id: string) {
     return fetch(`${BASE_PATH}/search/${format}?api_key=${TMDB_API_KEY}&query=${id}`)
         .then(res => res.json())
 }
+
+export function getAiringTv() {
+    return fetch(`${BASE_PATH}/tv/airing_today?api_key=${TMDB_API_KEY}`)
+        .then(res => res.json())
+}
+export function getTopTv() {
+    return fetch(`${BASE_PATH}/tv/top_rated?api_key=${TMDB_API_KEY}`)
+        .then(res => res.json())
+}
+export function getOnTheAirTv() {
+    return fetch(`${BASE_PATH}/tv/on_the_air?api_key=${TMDB_API_KEY}`)
+        .then(res => res.json())
+}
+export function getPopularTv() {
+    return fetch(`${BASE_PATH}/tv/popular?api_key=${TMDB_API_KEY}`)
+        .then(res => res.json())
+}

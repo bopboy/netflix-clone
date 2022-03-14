@@ -112,24 +112,29 @@ const infoVariants = {
 interface ISliderConProps {
     videoData: IMovie[]
     sliderTitle: string
-    search: string
+    search: string,
+    type: string
 }
 
-function SliderContainer({ videoData, sliderTitle, search }: ISliderConProps) {
+function SliderContainer({ videoData, sliderTitle, search, type }: ISliderConProps) {
     const location = useLocation()
     const history = useHistory()
     const bigMovieMatch = useRouteMatch<{ movieId: string }>(!search ? "/movies/:movieId" : "undefined")
     const locationMovie = { params: { movieId: new URLSearchParams(location.search).get("movies") } }
+    const bigTvMatch = useRouteMatch<{ tvId: string }>(!search ? "/tv/:tvId" : "undefined")
+    const locationTv = { params: { tvId: new URLSearchParams(location.search).get("tv") } }
+
+    const keyword = new URLSearchParams(location.search).get("keyword")
+
     // console.log(locationMovie)
     const [index, setIndex] = useState(0)
     const [back, setBack] = useState(false)
     const [leaving, setLeaving] = useState(false)
-    const keyword = new URLSearchParams(location.search).get("keyword")
     const onBoxClicked = (id: number) => {
         if (!search)
-            history.push(`/movies/${id}`)
+            history.push(`/${type}/${id}`)
         else
-            history.push(`/search?keyword=${keyword}&movies=${id}`)
+            history.push(`/search?keyword=${keyword}&${type}=${id}`)
     };
     const incIndex = () => {
         if (videoData) {
@@ -202,9 +207,19 @@ function SliderContainer({ videoData, sliderTitle, search }: ISliderConProps) {
                 </AnimatePresence>
             </Slider >
             {(locationMovie.params.movieId ? locationMovie.params.movieId?.length >= 1 : false ||
-                bigMovieMatch) ?
+                bigMovieMatch) && type === "movies" ?
                 (<MovieModal
+                    type="movies"
                     bigVideoMatch={bigMovieMatch ?? locationMovie}
+                    videoData={videoData}
+                    search={search}
+                    keyword={keyword ? keyword : undefined}
+                />) : null}
+            {(locationTv.params.tvId ? locationTv.params.tvId?.length >= 1 : false ||
+                bigTvMatch) && type === "tv" ?
+                (<MovieModal
+                    type="tv"
+                    bigVideoMatch={bigTvMatch ?? locationTv}
                     videoData={videoData}
                     search={search}
                     keyword={keyword ? keyword : undefined}
