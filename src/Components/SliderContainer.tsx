@@ -43,7 +43,7 @@ const ArrowBtn = styled(motion.div)`
     align-items: center;
     position:absolute;
     width: 65px;
-    height: 185px;
+    height: 150px;
     color:white;
     i {
         position: relative;
