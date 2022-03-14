@@ -8,7 +8,7 @@ import Intro from './Routes/Intro'
 
 function App() {
   return (
-    <Router>
+    <Router basename='netflix-clone'>
       <Header />
       <Switch>
         <Route path="/tv*"><Tv /></Route>
