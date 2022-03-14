@@ -14,7 +14,7 @@ function App() {
         <Route path="/tv*"><Tv /></Route>
         <Route path="/search"><Search /></Route>
         <Route path="/movies*"><Home /></Route>
-        <Route path="/"><Intro /></Route>
+        <Route path="/"><Home /></Route>
       </Switch>
       <Footer />
     </Router>
