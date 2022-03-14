@@ -56,7 +56,7 @@ function Intro() {
                 shows, and more.
             </Title>
             <Explanation>Watch anywhere. Search anytime.</Explanation>
-            <Link to="/movies">
+            <Link to="movies">
                 <Enter layoutId="circle">
                     Let's Start &nbsp;<i className="fas fa-chevron-right"></i>
                 </Enter>
