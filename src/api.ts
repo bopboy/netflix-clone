@@ -1,6 +1,6 @@
-import { TMDB_API_KEY } from './config'
+// import { TMDB_API_KEY } from './config'
 const BASE_PATH = "https://api.themoviedb.org/3"
-
+const TMDB_API_KEY=358644293c1868b2e91b4bd5903d35ae
 export interface IMovie {
     id: number
     backdrop_path: string
